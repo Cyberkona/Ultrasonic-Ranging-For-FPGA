@@ -1,0 +1,13 @@
+module My_Distance_Count
+(
+	CLK, test_count, Hundred, Ten, One, D_Ten, D_Hundred
+);
+	input CLK;
+	input test_count;
+	output reg [3:0]Hundred;
+	output reg [3:0]Ten;
+	output reg [3:0]One;
+	output reg [3:0]D_Ten;
+	output reg [3:0]D_Hundred;
+	
+	reg [23:0]pulse_count;

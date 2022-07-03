@@ -1,0 +1,53 @@
+module dis_sound(
+ CLK, RSTn, pulse_r, pulse_t, test_count
+)
+	input CLK;
+	input RSTn; 
+	input pulse_r;
+	input pulse_t;
+	output reg test_count;
+	
+	parameter headshoulders=12'd100;
+	reg [11:0] count_hs;
+	
+	reg hs_flag;
+	reg R1,R2;
+	reg T1,T2;
+
+	always @ (posedge CLK) begin
+		if(!RSTn)
+			begin
+				R1 <= 0;
+				R2 <= 0;
+				T1 <= 0;
+				T2 <= 0;				
+			end
+		else
+			begin
+				R1 <= pulse_r;
+				R2 <= R1;
+				T1 <= pulse_t;
+				T2 <= T1;	
+			end
+	end
+			
+	always @ (posedge CLK) begin
+		if(!RSTn)
+			begin
+				hs_flag <= 0;
+			end
+		else if({T1,T2}==2'b10) begin		//调制波上升沿
+				test_count <= 1;
+			end
+		else if(count_hs >= 12'd100) 		//回波下降沿记满间隔
+			begin				
+				if({R1,R2}==2'b10)			//回波上升沿
+					test_count <= 0;
+				else if({R1,R2}==2'b01)    //回波下降沿
+					count_hs <= 0;	
+			end
+		else 
+			count_hs <= count_hs + 1;
+	end
+				
+				
